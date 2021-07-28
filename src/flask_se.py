@@ -17,7 +17,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_basicauth import BasicAuth
 from flask_migrate import Migrate
 
-from se_models import db, init_db, Staff, Users, Thesis, Worktype, Curriculum, SummerSchool
+from se_models import db, init_db, Staff, Users, Thesis, Worktype, Curriculum, SummerSchool, Courses
 from wtforms import TextAreaField
 
 app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
@@ -65,11 +65,14 @@ basic_auth = BasicAuth(app)
 The following three classes are inherited from their respective base class,
 and are customized, to make flask_admin compatible with BasicAuth.
 """
+
+
 class AuthException(HTTPException):
     def __init__(self, message):
         super().__init__(message, Response(
             "You could not be authenticated. Please refresh the page.", 401,
-            {'WWW-Authenticate': 'Basic realm="Login Required"'} ))
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}))
+
 
 class SeModelView(ModelView):
     def is_accessible(self):
@@ -77,11 +80,12 @@ class SeModelView(ModelView):
             raise AuthException('Not authenticated.')
         else:
             return True
+
     def inaccessible_callback(self, name, **kwargs):
         return redirect(basic_auth.challenge())
 
-class UsersModelView(ModelView):
 
+class UsersModelView(ModelView):
     column_exclude_list = ['password_hash']
 
     def is_accessible(self):
@@ -89,11 +93,12 @@ class UsersModelView(ModelView):
             raise AuthException('Not authenticated.')
         else:
             return True
+
     def inaccessible_callback(self, name, **kwargs):
         return redirect(basic_auth.challenge())
 
-class SummerSchoolView(ModelView):
 
+class SummerSchoolView(ModelView):
     form_overrides = {
         'description': TextAreaField,
         'repo': TextAreaField,
@@ -106,7 +111,7 @@ class SummerSchoolView(ModelView):
             'style': 'font-family: monospace; width: 680px;'
         },
         'project_name': {
-            'style' : 'width: 680px;'
+            'style': 'width: 680px;'
         },
         'tech': {
             'rows': 3,
@@ -129,6 +134,7 @@ class SummerSchoolView(ModelView):
             'style': 'font-family: monospace; width: 680px;'
         },
     }
+
     def is_accessible(self):
         if not basic_auth.authenticate():
             raise AuthException('Not authenticated.')
@@ -138,8 +144,8 @@ class SummerSchoolView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(basic_auth.challenge())
 
-class StaffModelView(ModelView):
 
+class StaffModelView(ModelView):
     form_choices = {
         'science_degree': [
             ('', ''),
@@ -158,8 +164,10 @@ class StaffModelView(ModelView):
             raise AuthException('Not authenticated.')
         else:
             return True
+
     def inaccessible_callback(self, name, **kwargs):
         return redirect(basic_auth.challenge())
+
 
 class SeAdminIndexView(AdminIndexView):
     def is_accessible(self):
@@ -167,75 +175,96 @@ class SeAdminIndexView(AdminIndexView):
             raise AuthException('Not authenticated.')
         else:
             return True
+
     def inaccessible_callback(self, name, **kwargs):
         return redirect(basic_auth.challenge())
 
+
 # Init Flask-admin
 admin = Admin(app, index_view=SeAdminIndexView())
+
 
 # Flask routes goes
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/index.html')
 def indexhtml():
     return redirect(url_for('index'))
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
+
 @app.route('/404.html')
 def status_404():
     return render_template('404.html')
+
 
 @app.route('/contacts.html')
 def contacts():
     return render_template('contacts.html')
 
+
 @app.route('/students/index.html')
 def students():
     return render_template('students.html')
+
 
 @app.route('/students/scholarships.html')
 def scholarships():
     return render_template('students_scholarships.html')
 
+
 @app.route('/bachelor/application.html')
 def bachelor_application():
     return render_template('bachelor_application.html')
 
+
 @app.route('/bachelor/programming-technology.html')
 def bachelor_programming_technology():
-
-    curricula1 = Curriculum.query.filter(Curriculum.course_id==1).filter(Curriculum.study_year==1).order_by(Curriculum.type).all()
-    curricula2 = Curriculum.query.filter(Curriculum.course_id==1).filter(Curriculum.study_year==2).order_by(Curriculum.type).all()
-    curricula3 = Curriculum.query.filter(Curriculum.course_id==1).filter(Curriculum.study_year == 3).order_by(Curriculum.type).all()
-    curricula4 = Curriculum.query.filter(Curriculum.course_id==1).filter(Curriculum.study_year == 4).order_by(Curriculum.type).all()
+    curricula1 = Curriculum.query.filter(Curriculum.course_id == 1).filter(Curriculum.study_year == 1).order_by(
+        Curriculum.type).all()
+    curricula2 = Curriculum.query.filter(Curriculum.course_id == 1).filter(Curriculum.study_year == 2).order_by(
+        Curriculum.type).all()
+    curricula3 = Curriculum.query.filter(Curriculum.course_id == 1).filter(Curriculum.study_year == 3).order_by(
+        Curriculum.type).all()
+    curricula4 = Curriculum.query.filter(Curriculum.course_id == 1).filter(Curriculum.study_year == 4).order_by(
+        Curriculum.type).all()
 
     return render_template('bachelor_programming-technology.html', curricula1=curricula1, curricula2=curricula2,
                            curricula3=curricula3, curricula4=curricula4)
 
+
 @app.route('/bachelor/software-engineering.html')
 def bachelor_software_engineering():
-
-    curricula1 = Curriculum.query.filter(Curriculum.course_id==2).filter(Curriculum.study_year==1).order_by(Curriculum.type).all()
-    curricula2 = Curriculum.query.filter(Curriculum.course_id==2).filter(Curriculum.study_year==2).order_by(Curriculum.type).all()
-    curricula3 = Curriculum.query.filter(Curriculum.course_id==2).filter(Curriculum.study_year == 3).order_by(Curriculum.type).all()
-    curricula4 = Curriculum.query.filter(Curriculum.course_id==2).filter(Curriculum.study_year == 4).order_by(Curriculum.type).all()
+    curricula1 = Curriculum.query.filter(Curriculum.course_id == 2).filter(Curriculum.study_year == 1).order_by(
+        Curriculum.type).all()
+    curricula2 = Curriculum.query.filter(Curriculum.course_id == 2).filter(Curriculum.study_year == 2).order_by(
+        Curriculum.type).all()
+    curricula3 = Curriculum.query.filter(Curriculum.course_id == 2).filter(Curriculum.study_year == 3).order_by(
+        Curriculum.type).all()
+    curricula4 = Curriculum.query.filter(Curriculum.course_id == 2).filter(Curriculum.study_year == 4).order_by(
+        Curriculum.type).all()
 
     return render_template('bachelor_software-engineering.html', curricula1=curricula1, curricula2=curricula2,
                            curricula3=curricula3, curricula4=curricula4)
+
 
 @app.route('/master/information-systems-administration.html')
 def master_information_systems_administration():
     return render_template('master_information-systems-administration.html')
 
+
 @app.route('/master/software-engineering.html')
 def master_software_engineering():
     return render_template('master_software-engineering.html')
+
 
 @app.route('/department/staff.html')
 def department_staff():
@@ -251,7 +280,8 @@ def department_staff():
         staff.append({'name': s.user, 'position': position, 'contacts': s.official_email,
                       'avatar': s.user.avatar_uri, 'id': s.id})
 
-    return render_template('department_staff.html', staff = staff)
+    return render_template('department_staff.html', staff=staff)
+
 
 @app.route('/bachelor/admission.html')
 def bachelor_admission():
@@ -263,23 +293,33 @@ def bachelor_admission():
     else:
         theses = []
     staff = Staff.query.filter_by(still_working=True).limit(6).all()
-    return render_template('bachelor_admission.html', students = students, theses=theses, staff=staff)
+    return render_template('bachelor_admission.html', students=students, theses=theses, staff=staff)
+
 
 @app.route('/frequently-asked-questions.html')
 def frequently_asked_questions():
     return render_template('frequently_asked_questions.html')
 
+
 @app.route('/nooffer.html')
 def nooffer():
     return render_template('nooffer.html')
 
+
 @app.route('/theses.html')
 def theses_search():
-
     filter = ThesisFilter()
     filter.worktype.choices = [(worktype.id, worktype.type) for worktype in Worktype.query.all()]
 
-    dates = [theses.publish_year for theses in Thesis.query.filter(Thesis.temporary == False).with_entities(Thesis.publish_year).distinct()]
+    for sid in Thesis.query.with_entities(Thesis.course_id).distinct().all():
+        course = Courses.query.filter_by(id=sid[0]).first()
+
+        filter.course.choices.append((sid[0], course.name))
+        filter.course.choices.sort(key=lambda tup: tup[1])
+    filter.course.choices.insert(0, (0, 'Все'))
+
+    dates = [theses.publish_year for theses in
+             Thesis.query.filter(Thesis.temporary == False).with_entities(Thesis.publish_year).distinct()]
     dates.sort(reverse=True)
     filter.startdate.choices = dates
     filter.enddate.choices = dates
@@ -305,14 +345,16 @@ def theses_search():
 
     return render_template('theses.html', filter=filter)
 
+
 @app.route('/fetch_theses')
 def fetch_theses():
-
-    worktype = request.args.get('worktype', default = 1, type = int)
+    worktype = request.args.get('worktype', default=1, type=int)
     page = request.args.get('page', default=1, type=int)
     supervisor = request.args.get('supervisor', default=0, type=int)
+    course = request.args.get('course', default=0, type=int)
 
-    dates = [theses.publish_year for theses in Thesis.query.filter(Thesis.temporary == False).with_entities(Thesis.publish_year).distinct()]
+    dates = [theses.publish_year for theses in
+             Thesis.query.filter(Thesis.temporary == False).with_entities(Thesis.publish_year).distinct()]
     dates.sort(reverse=True)
 
     if dates:
@@ -326,7 +368,17 @@ def fetch_theses():
     if enddate < startdate:
         enddate = startdate
 
-    records = Thesis.query.filter(Thesis.temporary == False).filter(Thesis.publish_year >= startdate).filter(Thesis.publish_year <= enddate).order_by(Thesis.publish_year.desc())
+    records = Thesis.query.filter(Thesis.temporary == False).filter(Thesis.publish_year >= startdate).filter(
+        Thesis.publish_year <= enddate).order_by(Thesis.publish_year.desc())
+
+    if course:
+
+        # Check if course exists
+        ids = Thesis.query.with_entities(Thesis.course_id).distinct().all()
+        if [item for item in ids if item[0] == course]:
+            records = records.filter(Thesis.course_id == course)
+        else:
+            course = 0
 
     if supervisor:
 
@@ -343,7 +395,7 @@ def fetch_theses():
         records = records.paginate(per_page=10, page=page, error_out=False)
 
     if len(records.items):
-        return render_template('fetch_theses.html', theses=records, worktype=worktype, startdate=startdate,
+        return render_template('fetch_theses.html', theses=records, worktype=worktype, course=course, startdate=startdate,
                                enddate=enddate, supervisor=supervisor)
     else:
         return render_template('fetch_theses_blank.html')
@@ -351,7 +403,6 @@ def fetch_theses():
 
 @app.route('/post_theses', methods=['GET', 'POST'])
 def post_theses():
-
     error_status = 500
     success_status = 0
     thesis_text = None
@@ -445,7 +496,7 @@ def post_theses():
     author_en = translit(author, 'ru', reversed=True)
     author_en = author_en.replace(" ", "_")
     thesis_filename = author_en
-    thesis_filename = thesis_filename + '_' + type_id_string[type_id-1]
+    thesis_filename = thesis_filename + '_' + type_id_string[type_id - 1]
     thesis_filename = thesis_filename + '_' + str(publish_year) + '_text'
 
     path = urlparse(thesis_text.filename).path
@@ -463,10 +514,9 @@ def post_theses():
     # Save file to TMP
     thesis_text.save(os.path.join('./static/tmp/texts/', thesis_filename))
 
-
     if presentation:
         presentation_filename = author_en
-        presentation_filename = presentation_filename + '_' + type_id_string[type_id-1]
+        presentation_filename = presentation_filename + '_' + type_id_string[type_id - 1]
         presentation_filename = presentation_filename + '_' + str(publish_year) + '_slides'
 
         path = urlparse(presentation.filename).path
@@ -477,7 +527,7 @@ def post_theses():
 
     if supervisor_review:
         supervisor_review_filename = author_en
-        supervisor_review_filename = supervisor_review_filename + '_' + type_id_string[type_id-1]
+        supervisor_review_filename = supervisor_review_filename + '_' + type_id_string[type_id - 1]
         supervisor_review_filename = supervisor_review_filename + '_' + str(publish_year) + '_supervisor_review'
 
         path = urlparse(supervisor_review.filename).path
@@ -488,7 +538,7 @@ def post_theses():
 
     if reviewer_review:
         reviewer_review_filename = author_en
-        reviewer_review_filename = reviewer_review_filename + '_' + type_id_string[type_id-1]
+        reviewer_review_filename = reviewer_review_filename + '_' + type_id_string[type_id - 1]
         reviewer_review_filename = reviewer_review_filename + '_' + str(publish_year) + '_reviewer_review'
 
         path = urlparse(reviewer_review.filename).path
@@ -528,16 +578,16 @@ def post_theses():
         string='Success'
     )
 
+
 @app.route('/theses_tmp.html')
 def theses_tmp():
-
     records = Thesis.query.filter_by(temporary=True)
     return render_template('theses_tmp.html', theses=records)
 
+
 @app.route('/theses_delete_tmp')
 def theses_delete_tmp():
-
-    thesis_id = request.args.get('thesis_id', default = 1, type = int)
+    thesis_id = request.args.get('thesis_id', default=1, type=int)
     thesis = Thesis.query.filter_by(id=thesis_id).filter_by(temporary=True).first()
 
     if thesis:
@@ -546,40 +596,43 @@ def theses_delete_tmp():
 
     return redirect(url_for('theses_tmp'))
 
+
 @app.route('/theses_add_tmp')
 def theses_add_tmp():
-
-    thesis_id = request.args.get('thesis_id', default = 1, type = int)
+    thesis_id = request.args.get('thesis_id', default=1, type=int)
     thesis = Thesis.query.filter_by(id=thesis_id).filter_by(temporary=True).first()
 
     if thesis:
-        thesis.temporary=False
+        thesis.temporary = False
         db.session.commit()
 
         if thesis.text_uri:
             os.rename('./static/tmp/texts/' + thesis.text_uri, './static/thesis/texts/' + thesis.text_uri)
 
         if thesis.presentation_uri:
-            os.rename('./static/tmp/slides/' + thesis.presentation_uri, './static/thesis/slides/' + thesis.presentation_uri)
+            os.rename('./static/tmp/slides/' + thesis.presentation_uri,
+                      './static/thesis/slides/' + thesis.presentation_uri)
 
         if thesis.supervisor_review_uri:
-            os.rename('./static/tmp/reviews/' + thesis.supervisor_review_uri, './static/thesis/reviews/' + thesis.supervisor_review_uri)
+            os.rename('./static/tmp/reviews/' + thesis.supervisor_review_uri,
+                      './static/thesis/reviews/' + thesis.supervisor_review_uri)
 
         if thesis.reviewer_review_uri:
-            os.rename('./static/tmp/reviews/' + thesis.reviewer_review_uri, './static/thesis/reviews/' + thesis.reviewer_review_uri)
+            os.rename('./static/tmp/reviews/' + thesis.reviewer_review_uri,
+                      './static/thesis/reviews/' + thesis.reviewer_review_uri)
 
     return redirect(url_for('theses_tmp'))
 
+
 @app.route('/summer_school_2021.html')
 def summer_school():
-
     projects = SummerSchool.query.filter_by(year=2021).all()
     return render_template('summer_school.html', projects=projects)
+
 
 @app.route('/sitemap.xml', methods=['GET'])
 @app.route('/Sitemap.xml', methods=['GET'])
 def sitemap():
-
     """Generate sitemap.xml. Makes a list of urls and date modified."""
     pages = []
     skip_pages = ['/nooffer.html', '/fetch_theses', '/Sitemap.xml', '/sitemap.xml', '/404.html', '/post_theses',
@@ -601,6 +654,7 @@ def sitemap():
     response.headers["Content-Type"] = "application/xml"
     return response
 
+
 # Add views to the Flask-admin
 admin.add_view(UsersModelView(Users, db.session))
 admin.add_view(StaffModelView(Staff, db.session))
@@ -614,4 +668,4 @@ if __name__ == "__main__":
         elif sys.argv[1] == "init":
             init_db()
     else:
-        app.run(port=5000)
+        app.run(port=5000, debug=True)
