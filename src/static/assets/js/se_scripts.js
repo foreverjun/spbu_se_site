@@ -150,7 +150,7 @@ if (wt_select)
     }
 
     if (course){
-        if (course_select.innerHTML.indexOf('value="' + supervisor + '"') > -1){
+        if (course_select.innerHTML.indexOf('value="' + course + '"') > -1){
             course_select.value=course;
         } else {
             course_select.value=0;
