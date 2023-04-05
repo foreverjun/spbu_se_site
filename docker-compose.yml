@@ -1,0 +1,18 @@
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    container_name: flask
+    restart: always
+    expose:
+      - 8080
+    volumes:
+      - ./databases:/app/databases
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: always
+    ports:
+     - "80:80"

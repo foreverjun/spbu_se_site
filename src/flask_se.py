@@ -18,7 +18,7 @@ from flask_login import current_user
 
 
 import flask_se_theses
-from flask_se_config import SECRET_KEY_THESIS, SECRET_KEY, SQLITE_DATABASE_NAME, plural_hours, get_hours_since
+from flask_se_config import SECRET_KEY_THESIS, SECRET_KEY, SQLITE_DATABASE_NAME, SQLITE_DATABASE_PATH, plural_hours, get_hours_since
 from se_models import db, search, init_db, Staff, Users, Thesis, Curriculum, SummerSchool, Posts, DiplomaThemes, \
     CurrentThesis, recalculate_post_rank
 from flask_se_auth import login_manager, register_basic, login_index, password_recovery, user_profile, upload_avatar, \
@@ -58,7 +58,7 @@ app.config['FREEZER_DESTINATION'] = '../docs'
 app.config['FREEZER_IGNORE_MIMETYPE_WARNINGS'] = True
 
 # SQLAlchimy config
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + SQLITE_DATABASE_NAME
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + SQLITE_DATABASE_PATH + SQLITE_DATABASE_NAME
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SESSION_COOKIE_NAME'] = "se_session"

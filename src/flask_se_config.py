@@ -10,6 +10,7 @@ SECRET_KEY = os.path.join(pathlib.Path(__file__).parent, "flask_se_secret.conf")
 MAIL_PASSWORD_FILE = os.path.join(pathlib.Path(__file__).parent, "flask_se_mail.conf")
 SECRET_KEY_THESIS = os.urandom(16).hex()
 SQLITE_DATABASE_NAME = "se.db"
+SQLITE_DATABASE_PATH = "databases/"
 
 if os.path.exists(MAIL_PASSWORD_FILE):
     with open(MAIL_PASSWORD_FILE, "r") as file:

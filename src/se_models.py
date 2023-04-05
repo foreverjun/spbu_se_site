@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from os import urandom
+from os import urandom, path
 import shutil
 
 from datetime import datetime, timedelta
@@ -17,7 +17,7 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime
 
 
-from flask_se_config import post_ranking_score, get_hours_since, SQLITE_DATABASE_NAME, SQLITE_DATABASE_BACKUP_NAME
+from flask_se_config import post_ranking_score, get_hours_since, SQLITE_DATABASE_NAME, SQLITE_DATABASE_BACKUP_NAME, SQLITE_DATABASE_PATH
 
 convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -525,7 +525,7 @@ class DiplomaThemes(db.Model):
     description = db.Column(db.String(2048), nullable=True)
     requirements = db.Column(db.String(2048), nullable=True)
     status = db.Column(db.Integer, default=0, nullable=False) # 0 - new, 1 - need update, 2 - approved, 3 - archive
-    
+
     comment = db.Column(db.String(2048), nullable=True)
 
     levels = db.relationship('ThemesLevel', secondary=diploma_themes_level, lazy='subquery',
@@ -1297,11 +1297,16 @@ def init_db():
          },
     ]
 
+    #Check if databases directory exists. If not, create it
+    db_dir = Path(SQLITE_DATABASE_PATH)
+    if not db_dir.exists():
+        db_dir.mkdir()
+
 
     # Check if db file already exists. If so, backup it
-    db_file = Path(SQLITE_DATABASE_NAME)
+    db_file = Path(SQLITE_DATABASE_PATH + SQLITE_DATABASE_NAME)
     if db_file.is_file():
-        shutil.copyfile(SQLITE_DATABASE_NAME, SQLITE_DATABASE_BACKUP_NAME)
+        shutil.copyfile(SQLITE_DATABASE_PATH +SQLITE_DATABASE_NAME, SQLITE_DATABASE_PATH +SQLITE_DATABASE_BACKUP_NAME)
 
     # Init DB
     db.session.commit()  # https://stackoverflow.com/questions/24289808/drop-all-freezes-in-flask-with-sqlalchemy
