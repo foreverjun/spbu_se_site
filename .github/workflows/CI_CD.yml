@@ -41,7 +41,10 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/foreverjun/se_spbu_website
-          tags: latest
+          tags: |
+            latest
+            type=ref,event=pr
+            type=semver,pattern={{version}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
