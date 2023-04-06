@@ -20,7 +20,6 @@ on:
   pull_request:
     types:
       - closed
-      - labeled
 jobs:
   deploy:
     if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
