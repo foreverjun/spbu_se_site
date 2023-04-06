@@ -1,0 +1,55 @@
+#name: Linter
+
+#on: [push, pull_request]
+#
+#jobs:
+#  lint:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: psf/black@stable
+#        with:
+#          options: "--check --verbose --diff"
+#          src: "./src"
+#          jupyter: true
+#          version: "~= 23.0"
+# temporary comment out the linting part to test cd
+
+name: CD
+on:
+  pull_request:
+    branches:
+      - test_CI_CD_branch
+    tyeps:
+      -closed
+jobs:
+  deploy:
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) }}
+    runs-on: ubuntu-latest
+    environment: deploy_environment
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Log in to the Container registry
+          uses: docker/login-action@v2
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ github.token }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/se_spbu_website
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
