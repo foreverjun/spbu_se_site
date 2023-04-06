@@ -23,7 +23,7 @@ on:
       - labeled
 jobs:
   deploy:
-    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
     runs-on: ubuntu-latest
     environment: deploy_environment
     steps:
