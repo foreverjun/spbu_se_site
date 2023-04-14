@@ -1,12 +1,11 @@
 name: CD
-#on:
-on: [push, pull_request]
-#  pull_request:
-#    types:
-#      - closed
+on:
+  pull_request:
+    types:
+      - closed
 jobs:
   deploy:
-#    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
     runs-on: ubuntu-latest
     environment: deploy_environment
     steps:
@@ -14,8 +13,6 @@ jobs:
         id: date
         run: |
           echo "date=$(date +'%d-%m-%Y')" >> ${GITHUB_OUTPUT}
-          echo "date=$(date +'%d-%m-%Y')"
-          echo "${{steps.date.output.date}}"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Log in to the Container registry
@@ -35,13 +32,11 @@ jobs:
             type=raw,value=${{steps.date.outputs.date}},enable=true
             type=sha
 
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: .
-#          file: ./Dockerfile
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
-
-
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
