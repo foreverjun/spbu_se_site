@@ -210,17 +210,24 @@ class SeAdminModelViewReviewDiplomaThemes(SeAdminModelViewReviewer):
 
 
 class SeAdminModelViewCurrentThesis(SeAdminModelView):
-    column_list = ('title', 'user', 'area', 'worktype', 'supervisor', 'deleted', 'status')
-    column_labels = dict(title='Название темы',
-                         user='Студент',
-                         area='Направление обучения',
-                         worktype='Тип работы',
-                         supervisor='Научный руководитель',
-                         deleted='Удалена',
-                         status='Статус')
-    column_choices = {'status': [
-        (1, 'Текущая работа'),
-        (2, 'Завершенная работа')
-    ]}
+    column_list = (
+        "title",
+        "user",
+        "area",
+        "worktype",
+        "supervisor",
+        "deleted",
+        "status",
+    )
+    column_labels = dict(
+        title="Название темы",
+        user="Студент",
+        area="Направление обучения",
+        worktype="Тип работы",
+        supervisor="Научный руководитель",
+        deleted="Удалена",
+        status="Статус",
+    )
+    column_choices = {"status": [(1, "Текущая работа"), (2, "Завершенная работа")]}
 
     pass

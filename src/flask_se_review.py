@@ -324,7 +324,6 @@ def edit_thesis_on_review():
     )
 
 
-
 @login_required
 def delete_thesis_on_review():
     user = current_user
