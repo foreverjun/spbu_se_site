@@ -1,8 +1,9 @@
 name: CD
 on:
-  pull_request:
-    types:
-      - closed
+  on: [push, pull_request]
+#  pull_request:
+#    types:
+#      - closed
 jobs:
   deploy:
     if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
@@ -27,18 +28,18 @@ jobs:
         with:
           images: ghcr.io/foreverjun/se_spbu_website
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=edge
-            type=raw,value={{steps.output.date}},enable={{is_default_branch}}
+            type=raw,value=latest,enable=true
+            type=edge,enable=true,branch=new_test_branch
+            type=raw,value={{steps.output.date}},enable=true
             type=sha
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
 
 
