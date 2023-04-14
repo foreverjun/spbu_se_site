@@ -13,8 +13,8 @@ jobs:
       - name: Get current date
         id: date
         run: |
-          echo "date=$(date +'%d-%m-%Y)" >> ${GITHUB_OUTPUT}
-          echo "date=$(date +'%d-%m-%Y)"
+          echo "date=$(date +'%d-%m-%Y')" >> ${GITHUB_OUTPUT}
+          echo "date=$(date +'%d-%m-%Y')"
           echo "${{steps.date.output.date}}"
       - name: Checkout
         uses: actions/checkout@v3
