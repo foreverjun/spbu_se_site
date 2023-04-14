@@ -32,7 +32,7 @@ jobs:
           images: ghcr.io/foreverjun/se_spbu_website
           tags: |
             type=raw,value=latest,enable=true
-            type=raw,value=${{steps.date.output.date}},enable=true
+            type=raw,value=${{steps.date.outputs.date}},enable=true
             type=sha
 
 #      - name: Build and push Docker image
