@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
+        run: |
+          echo "date=$(date +'%d-%m-%Y')" >> ${GITHUB_OUTPUT}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Log in to the Container registry
@@ -27,9 +28,8 @@ jobs:
         with:
           images: ghcr.io/foreverjun/se_spbu_website
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=edge
-            type=raw,value={{steps.output.date}},enable={{is_default_branch}}
+            type=raw,value=latest,enable=true
+            type=raw,value=${{steps.date.outputs.date}},enable=true
             type=sha
 
       - name: Build and push Docker image
@@ -40,5 +40,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
