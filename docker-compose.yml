@@ -9,6 +9,10 @@ services:
       - 8080
     volumes:
       - ./databases:/app/databases
+      - ./files/currentThesis:/app/static/currentThesis
+      - ./files/thesis:/app/static/thesis
+      - ./files/images:/app/static/images
+      - ./files/files:/app/static/files
 
   nginx:
     container_name: nginx
