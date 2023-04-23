@@ -26,7 +26,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/foreverjun/se_spbu_website
+          images: ghcr.io/spbu-se/se_spbu_website
           tags: |
             latest
             type=semver,pattern={{version}}
