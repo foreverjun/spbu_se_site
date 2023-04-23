@@ -1,11 +1,13 @@
 name: CD
+
 on:
-  pull_request:
-    types:
-      - closed
+  push:
+    tags:
+      - 'v*.*.*'
+    branches:
+      - 'add_CI_CD_branch'
 jobs:
   deploy:
-    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'deploy')) && (github.event.pull_request.base.ref == 'test_CI_CD_branch')}}
     runs-on: ubuntu-latest
     environment: deploy_environment
     steps:
@@ -29,6 +31,7 @@ jobs:
           images: ghcr.io/foreverjun/se_spbu_website
           tags: |
             latest
+            type=semver,pattern={{version}}
             type=raw,value=${{steps.date.outputs.date}},enable=true
             type=sha
 
