@@ -55,4 +55,3 @@ jobs:
             docker compose -f ./se_spbu_site/docker-compose.yml pull
             docker compose -f ./se_spbu_site/docker-compose.yml up -d
             docker image prune
-            y
