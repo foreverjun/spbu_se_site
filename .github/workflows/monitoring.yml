@@ -1,3 +1,5 @@
+name: Monitoring
+
 on:
   schedule:
     - cron:  '*/2 * * * *'
