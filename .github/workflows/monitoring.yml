@@ -2,7 +2,7 @@ name: Monitoring
 
 on:
   schedule:
-    - cron:  '*/6 * * * *'
+    - cron:  '*/16 * * * *'
 
 jobs:
   ping:
