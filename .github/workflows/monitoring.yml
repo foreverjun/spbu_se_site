@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron:  '* * * * *'
+    - cron:  '*/2 * * * *'
 jobs:
   ping:
     runs-on: ubuntu-18.04
