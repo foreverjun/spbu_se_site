@@ -20,10 +20,10 @@ jobs:
         if: ${{ failure() }}
         uses: appleboy/telegram-action@master
         with:
-            to: ${{ secrets.TELEGRAM_TO }}
-            token: ${{ secrets.TELEGRAM_TOKEN }}
-            message: |
-              Health check of the:
-              ${{secrets.HOST}}
-              failed with the result:
-              ${{ steps.ping.outputs.status }}
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Health check of the:
+            ${{secrets.HOST}}
+            failed with the result:
+            ${{ steps.ping.outputs.status }}
