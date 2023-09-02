@@ -28,5 +28,5 @@ jobs:
           message: |
             Health check of the:
             ${{secrets.HOST}}
-            failed with the result:
+            failed with the error code:
             ${{ steps.ping.outputs.status }}
