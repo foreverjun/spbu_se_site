@@ -11,14 +11,14 @@ jobs:
       - name: curl actuator
         id: ping
         run: |
-          echo "::set-output name=status::$(curl -s -o /dev/null -w "%{http_code}" ${{secrets.HOST}})"
+          echo "status=$(curl -s -o /dev/null -w "%{http_code}" ${{secrets.HOST}})" >> $GITHUB_OUTPUT
       - name: health check
         run: |
-          if [[ ${{ steps.ping.outputs.status }} != *"200"* ]]; then
+          if [[ ${{ steps.ping.outputs.status }} != 200 ]]; then
             echo "health check is failed"
             exit 1
           fi
-          echo "It's OK"
+          echo "The site is operating normally"
       - name: send alert in telegram
         if: ${{ failure() }}
         uses: appleboy/telegram-action@master
