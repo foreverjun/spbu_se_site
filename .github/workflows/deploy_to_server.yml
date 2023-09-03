@@ -15,5 +15,6 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          port: 22
           key: ${{ secrets.SSHKEY }}
           script:
